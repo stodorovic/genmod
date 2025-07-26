@@ -27,7 +27,6 @@ def sort_variants(infile, mode="chromosome"):
     Args:
         infile : A string that is the path to a file
         mode : 'chromosome' or 'rank'
-        outfile : The path to an outfile where the variants should be printed
 
     Returns:
         0 if sorting was performed
@@ -52,13 +51,17 @@ def sort_variants(infile, mode="chromosome"):
     sort_start = datetime.now()
 
     try:
-        call(command)
+        exit_code = call(command)
     except OSError as e:
         logger.warning("unix program 'sort' does not seem to exist on your system...")
         logger.warning("genmod needs unix sort to provide a sorted output.")
         logger.warning("Output VCF will not be sorted since genmod can not findunix sort")
         raise e
 
+    if exit_code:
+        logger.warning("Output VCF will not be sorted since unix sort exited with code {0}".format(exit_code))
+        raise ValueError("unix sort exited with code {0}".format(exit_code))
+
     logger.info("Sorting done. Time to sort: {0}".format(datetime.now() - sort_start))
 
-    return
+    return exit_code
