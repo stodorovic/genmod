@@ -3,7 +3,8 @@
 ###############################################
 FROM ghcr.io/astral-sh/uv:python3.13-alpine
 
-RUN apk update & apk add build-base zlib-dev
+RUN apk add --update --no-cache build-base zlib-dev coreutil
+
 # Copy the project into the image
 ADD . /app
 
